@@ -25,7 +25,13 @@ public class ClassesService {
     public Classes save(Classes entity) {
         return repository.save(entity);
     }
-
+    public Classes update(Long id, Classes entity) {
+        if (!repository.existsById(id)) {
+            throw new IllegalArgumentException("Class with id " + id + " does not exist");
+        }
+        entity.setId(id);
+        return repository.save(entity);
+    }
     public void deleteById(Long id) {
         repository.deleteById(id);
     }

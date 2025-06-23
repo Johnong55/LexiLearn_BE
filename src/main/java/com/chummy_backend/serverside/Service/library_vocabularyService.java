@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.chummy_backend.serverside.Model.examination.library;
 import com.chummy_backend.serverside.Model.examination.library_vocabulary;
 import com.chummy_backend.serverside.Repository.library_vocabularyRepository;
 
@@ -28,5 +29,11 @@ public class library_vocabularyService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+    public List<library_vocabulary> findByLibraries(library Library)
+    {
+
+        return repository.findByLibrary(Library);
+
     }
 }
