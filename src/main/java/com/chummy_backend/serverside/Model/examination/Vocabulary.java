@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Entity
 @Data
@@ -24,6 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Accessors(chain= true)
 @Table(uniqueConstraints= {@UniqueConstraint(columnNames= {"word","meaning"})})
 public class Vocabulary {
     @Id

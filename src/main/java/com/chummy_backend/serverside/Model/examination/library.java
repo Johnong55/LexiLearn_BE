@@ -35,6 +35,6 @@ public class library {
     @ManyToOne(cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private Users ownerID;
     
-    @OneToMany(mappedBy = "library")
+    @OneToMany(cascade= CascadeType.ALL,mappedBy = "library")
     private List<library_vocabulary> library_vocabularies;
 }

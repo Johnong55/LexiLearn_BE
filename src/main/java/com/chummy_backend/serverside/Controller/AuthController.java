@@ -1,5 +1,7 @@
 package com.chummy_backend.serverside.Controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,13 +31,14 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtil jwtUtil;
-
+  private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UsersRequest request) {
         if (usersRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BadRequestException("Email already exists");
         }
         Users user = new Users();
+            logger.info("Received user creation request: {}", request);
         user.setDisplayName(request.getDisplayName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
