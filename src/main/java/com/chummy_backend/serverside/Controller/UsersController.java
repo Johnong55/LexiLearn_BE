@@ -3,6 +3,7 @@ package com.chummy_backend.serverside.Controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,12 +20,16 @@ import com.chummy_backend.serverside.Exception.BadRequestException;
 import com.chummy_backend.serverside.Exception.ResourceNotFoundException;
 import com.chummy_backend.serverside.Model.general.Users;
 import com.chummy_backend.serverside.Service.UsersService;
+import org.slf4j.Logger;
+
 
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
     @Autowired
     private UsersService usersService;
+    private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
+
 
     @GetMapping
     public ResponseEntity<List<UsersResponse>> getAllUsers() {
@@ -52,6 +57,7 @@ public class UsersController {
     public ResponseEntity<UsersResponse> createUser(@RequestBody UsersRequest request) {
         try {
             Users u = new Users();
+            logger.info("Received user creation request: {}", request);
             u.setDisplayName(request.getDisplayName());
             u.setEmail(request.getEmail());
             u.setPassword(request.getPassword());

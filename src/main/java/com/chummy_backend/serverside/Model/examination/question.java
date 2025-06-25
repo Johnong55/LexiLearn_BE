@@ -1,5 +1,7 @@
 package com.chummy_backend.serverside.Model.examination;
 
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,6 +30,7 @@ public class question {
     private String content;
     @ManyToOne(cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private Vocabulary vocabulary;
+    private List<String> choice;
 
     
 }
