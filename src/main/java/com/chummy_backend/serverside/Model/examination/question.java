@@ -31,6 +31,4 @@ public class question {
     @ManyToOne(cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private Vocabulary vocabulary;
     private List<String> choice;
-
-    
 }

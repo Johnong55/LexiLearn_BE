@@ -25,7 +25,6 @@ import com.chummy_backend.serverside.Service.ClassesService;
 public class ClassesController {
     @Autowired
     private ClassesService classesService;
-
     @GetMapping
     public ResponseEntity<List<ClassesResponse>> getAllClasses() {
         try {
