@@ -68,6 +68,19 @@ public class VocabularyController {
             throw new BadRequestException("Failed to create vocabulary");
         }
     }
+    @PostMapping("/random")
+    public ResponseEntity<List<VocabularyResponse>> getRandomVocabulary() {
+        try{
+            List<Vocabulary> vocabularies = vocabularyService.randomVocabularysForNewDays();
+            List<VocabularyResponse> result  = vocabularies.stream().map(this::toResponse).collect(Collectors.toList());
+            return ResponseEntity.ok(result);
+        }
+        catch( Exception e)
+        {
+            throw new BadRequestException("Failed to get vocabularies");
+        }
+    }
+    
 
     @GetMapping("/library/{id}")
     public ResponseEntity<List<VocabularyResponse>> getByLibrary(@PathVariable("id") long libID) {
