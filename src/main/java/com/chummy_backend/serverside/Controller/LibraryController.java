@@ -40,7 +40,7 @@ public class LibraryController {
     @GetMapping
     public ResponseEntity<List<LibraryResponse>> getAllLibraries() {
         try {
-            List<LibraryResponse> result = libraryService.findAll().stream().map(this::toResponse)
+            List<LibraryResponse> result = libraryService.findAll().stream().map(this::SumariesResponse)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(result);
         } catch (Exception e) {
@@ -69,7 +69,7 @@ public class LibraryController {
 
             List<library> libraries = libraryService.findByUser(owner);
             List<LibraryResponse> response = libraries.stream()
-                    .map(this::toResponse)
+                    .map(this::SumariesResponse)
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(response);
@@ -154,6 +154,7 @@ public class LibraryController {
             List<String> vocabularyWords = lib.getLibrary_vocabularies().stream()
                     .map(lv -> lv.getVocabulary().getWord())
                     .collect(Collectors.toList());
+            res.setLengthOfWords(lib.getLibrary_vocabularies().size());
 
             res.setVocabularyIds(vocabularyIds);
             res.setVocabularyWords(vocabularyWords);
@@ -162,4 +163,20 @@ public class LibraryController {
         return res;
     }
 
+    private LibraryResponse SumariesResponse(library lib) {
+        LibraryResponse res = new LibraryResponse();
+        res.setId(lib.getId());
+        res.setLibName(lib.getLib_name());
+        res.setLengthOfWords(lib.getLibrary_vocabularies().size());
+        // Set ownerId and display name
+        if (lib.getOwnerID() != null) {
+            res.setOwnerId(lib.getOwnerID().getId());
+            res.setOwnerDisplayName(lib.getOwnerID().getDisplayName()); // Assuming this method exists
+        }
+        res.setVocabularyIds(null);
+        res.setVocabularyWords(null);
+
+        return res;
+
+    }
 }

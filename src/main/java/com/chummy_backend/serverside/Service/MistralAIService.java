@@ -27,57 +27,56 @@ public class MistralAIService {
     private ObjectMapper objectMapper;
 
     private static final String MULTIPLE_CHOICE_TEMPLATE = """
-        Create an English multiple choice question to test vocabulary knowledge.
-        
-        Word: %s
-        Meaning: %s
-        Difficulty: %s
-        Number of choices: %d
-        
-        Requirements:
-        1. Create an English sentence with clear context, replace the word "%s" with blank "_____"
-        2. Create %d choices, including 1 correct answer "%s" and reasonable wrong answers
-        3. Wrong answers should be the same word type and similar difficulty level
-        4. Provide a brief explanation for the correct answer
-        5. Make sure the sentence is grammatically correct and natural
-        
-        Return the result in JSON format:
-        {
-            "content": "question with blank",
-            "choices": ["choice 1", "choice 2", "choice 3", "choice 4"],
-            "correctAnswer": "correct answer",
-            "explanation": "explanation",
-            "questionType": "MULTIPLE_CHOICE"
-        }
-        
-        IMPORTANT: Return ONLY the JSON, no additional text or formatting.
-        """;
+            Create an English multiple choice question to test vocabulary knowledge.
 
+            Word: %s
+            Meaning: %s
+            Difficulty: %s
+            Number of choices: %d
+
+            Requirements:
+            1. Create an English sentence with clear context, replace the word "%s" with blank "_____"
+            2. Create %d choices, including 1 correct answer "%s" and reasonable wrong answers
+            3. Wrong answers should be the same word type and similar difficulty level
+            4. Provide a brief explanation for the correct answer
+            5. Make sure the sentence is grammatically correct and natural
+
+            Return the result in JSON format:
+            {
+                "content": "question with blank",
+                "choices": ["choice 1", "choice 2", "choice 3", "choice 4"],
+                "correctAnswer": "correct answer",
+                "explanation": "explanation",
+                "questionType": "MULTIPLE_CHOICE"
+            }
+
+            IMPORTANT: Return ONLY the JSON, no additional text or formatting.
+            """;
     private static final String FILL_IN_BLANK_TEMPLATE = """
-        Create an English fill-in-the-blank question.
-        
-        Word: %s
-        Meaning: %s
-        Difficulty: %s
-        Context: %s
-        
-        Requirements:
-        1. Create an English sentence with appropriate context for the word meaning
-        2. Replace the word "%s" with blank "_____"
-        3. The sentence should have %s difficulty level
-        4. Provide hints if needed
-        5. Make sure the sentence is grammatically correct and natural
-        
-        Return the result in JSON format:
-        {
-            "content": "question with blank",
-            "correctAnswer": "correct answer",
-            "explanation": "explanation and hints",
-            "questionType": "FILL_IN_BLANK"
-        }
-        
-        IMPORTANT: Return ONLY the JSON, no additional text or formatting.
-        """;
+            Create an English fill-in-the-blank question.
+
+            Word: %s
+            Meaning (Vietnamese): %s
+            Difficulty: %s
+            Context Example: %s
+
+            Instructions:
+            1. Write one grammatically correct and natural English sentence that clearly shows the meaning of the word.
+            2. Replace the word "%s" in the sentence with a blank like this: "_____".
+            3. The blank must be in the exact position of the original word — do not use synonyms or change the meaning.
+            4. The sentence should reflect the given difficulty level: %s.
+            5. Provide a short explanation of why that word fits the sentence.
+
+            Return ONLY in the following JSON format:
+            {
+                "content": "Sentence with blank",
+                "correctAnswer": "Word to fill in",
+                "explanation": "Explanation of the word's meaning in the sentence",
+                "questionType": "FILL_IN_BLANK"
+            }
+
+            IMPORTANT: Return ONLY the JSON object. No extra text.
+            """;
 
     public GeneratedQuestionResponse generateMultipleChoiceQuestion(QuestionGenerationRequest request) {
         String prompt = String.format(MULTIPLE_CHOICE_TEMPLATE,
@@ -87,8 +86,7 @@ public class MistralAIService {
                 request.getNumberOfChoices(),
                 request.getWord(),
                 request.getNumberOfChoices(),
-                request.getWord()
-        );
+                request.getWord());
 
         try {
             String response = callMistralAI(prompt);
@@ -108,8 +106,7 @@ public class MistralAIService {
                 request.getDifficulty(),
                 context,
                 request.getWord(),
-                request.getDifficulty()
-        );
+                request.getDifficulty());
 
         try {
             String response = callMistralAI(prompt);
@@ -137,7 +134,7 @@ public class MistralAIService {
         } catch (Exception e) {
             String msg = e.getMessage();
             log.error("❌ Mistral (Ollama) API error: {}", msg);
-            
+
             if (msg != null && msg.contains("connection refused")) {
                 throw new RuntimeException("Ollama server is not running. Please start Ollama service.");
             }
@@ -149,11 +146,11 @@ public class MistralAIService {
         try {
             // Clean up the response - remove code blocks and extra whitespace
             jsonResponse = jsonResponse.replaceAll("```json", "").replaceAll("```", "").trim();
-            
+
             // Find JSON object in response
             int startIndex = jsonResponse.indexOf("{");
             int endIndex = jsonResponse.lastIndexOf("}") + 1;
-            
+
             if (startIndex != -1 && endIndex > startIndex) {
                 jsonResponse = jsonResponse.substring(startIndex, endIndex);
             }
@@ -183,7 +180,7 @@ public class MistralAIService {
     private GeneratedQuestionResponse createFallbackMultipleChoice(QuestionGenerationRequest request) {
         String word = request.getWord();
         String meaning = request.getMeaning();
-        
+
         return GeneratedQuestionResponse.builder()
                 .content("The student needs to _____ the new vocabulary to improve their English.")
                 .choices(Arrays.asList("learn", "forget", "ignore", "avoid"))
@@ -196,7 +193,7 @@ public class MistralAIService {
     private GeneratedQuestionResponse createFallbackFillInBlank(QuestionGenerationRequest request) {
         String word = request.getWord();
         String meaning = request.getMeaning();
-        
+
         return GeneratedQuestionResponse.builder()
                 .content("Please _____ the correct answer based on the context.")
                 .correctAnswer(word)

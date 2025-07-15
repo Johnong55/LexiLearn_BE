@@ -1,15 +1,16 @@
-package com.chummy_backend.serverside.DTO.response;
+    package com.chummy_backend.serverside.DTO.response;
 
-import java.util.List;
+    import java.util.List;
 
-import lombok.Data;
+    import lombok.Data;
 
-@Data
-public class LibraryResponse {
-    private Long id;
-    private String libName;
-    private Long ownerId;
-    private String ownerDisplayName;
-    private List<Long> vocabularyIds;
-    private List<String> vocabularyWords;
-}
+    @Data
+    public class LibraryResponse {
+        private Long id;
+        private String libName;
+        private Long ownerId;
+        private String ownerDisplayName;
+        private List<Long> vocabularyIds;
+        private List<String> vocabularyWords;
+        private int lengthOfWords;
+    }
